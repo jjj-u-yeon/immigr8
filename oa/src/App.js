@@ -5,7 +5,7 @@ import { Paper } from '@mui/material';
 
 function App() {
   return (
-    <div className="App">
+    <div>
       <Paper>
         <Form/>
       </Paper>

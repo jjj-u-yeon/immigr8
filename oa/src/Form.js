@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { FormControl, FormControlLabel, FormLabel, Grid,RadioGroup,TextField, Radio, Button } from '@mui/material';
+import { FormControl, FormControlLabel, FormLabel, Grid,RadioGroup,TextField, Radio } from '@mui/material';
 import { useForm } from './components/useForm';
+import { Button } from './components/Button'
 
 const initialValues = {
     givenNameA: '',
@@ -19,15 +20,34 @@ const initialValues = {
 
 export default function EmployeeForm() {
 
+    const validate = (fieldValues = values) => {
+        let temp = {...errors}
+        if ('givenNameA' in fieldValues)
+            temp.givenNameA = fieldValues.givenNameA ? "" : "This field is required."
+        setErrors({
+            ...temp
+        })
+    }
+
     const{
         values,
         setValues,
-        handleInputChange
+        errors,
+        setErrors,
+        handleInputChange,
+        resetForm
 
-    }=useForm(initialValues);
+    }=useForm(initialValues, true, validate);
+
+    const handleSubmit = e => {
+        e.preventDefault()
+        if(validate()){
+            resetForm()
+        }
+    }
 
     return (
-        <form margin={1}>
+        <form margin={1} onSubmit={handleSubmit}>
             <Grid container>
                 <Grid item xs={6}></Grid>
                     <TextField
@@ -59,7 +79,7 @@ export default function EmployeeForm() {
                     </FormControl>
                 </Grid>
             </Grid>
-            <Button variant='contained' size='large' label='submite'/>
+            <Button type='submit' text='submit'/>
         </form>
     )
 }
