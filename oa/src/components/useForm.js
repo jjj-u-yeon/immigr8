@@ -1,9 +1,14 @@
 import React, { useState } from 'react'
+import { getForm } from '../services/formService';
 
 export function useForm(initialValues, validateOnChange = false, validate) {
 
 
-    const [values, setValues] = useState(initialValues);
+    const [values, setValues] = useState(() => {
+
+        const storedValue = getForm();
+        return storedValue ? JSON.parse(storedValue) : initialValues
+    });
     const [errors, setErrors] = useState([]);
 
     const handleInputChange = e => {
@@ -18,6 +23,8 @@ export function useForm(initialValues, validateOnChange = false, validate) {
     }
     const resetForm = () => {
         setValues(initialValues);
+        alert("are you here")
+        localStorage.removeItem("formData")
         setErrors({});
     }
 

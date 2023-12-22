@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Link } from 'react'
 import { FormControl, FormControlLabel, FormLabel, Grid,RadioGroup,TextField, Radio } from '@mui/material';
 import { useForm } from './components/useForm';
+import {useNavigate, Router, Routes, BrowserRouter} from 'react-router-dom'
 import { Button } from './components/Button'
+import { setForm } from './services/formService'
 
 const initialValues = {
     givenNameA: '',
@@ -18,8 +20,7 @@ const initialValues = {
     creditExpiry: new Date(),
 }
 
-export default function EmployeeForm() {
-
+export default function Form() {
     const validate = (fieldValues = values) => {
         let temp = {...errors}
         if ('givenNameA' in fieldValues)
@@ -28,6 +29,11 @@ export default function EmployeeForm() {
             ...temp
         })
     }
+
+    useEffect(() => {
+        const data = localStorage.getItem("formData");
+        setValues({...values, data});
+      }, [])
 
     const{
         values,
@@ -41,9 +47,13 @@ export default function EmployeeForm() {
 
     const handleSubmit = e => {
         e.preventDefault()
-        if(validate()){
-            resetForm()
-        }
+    }
+
+    const navigate = useNavigate();
+    const routeChange = () => {
+        let path = '/review';
+        navigate(path);
+        setForm(values);
     }
 
     return (
@@ -60,6 +70,7 @@ export default function EmployeeForm() {
                     <TextField
                     variant='outlined'
                     label='Family Name'
+                    shrink={true}
                     name='familyNameA'
                     value={values.familyNameA}
                     onChange={handleInputChange}
@@ -79,7 +90,7 @@ export default function EmployeeForm() {
                     </FormControl>
                 </Grid>
             </Grid>
-            <Button type='submit' text='submit'/>
+            <Button onClick={routeChange} text='Next'/>
         </form>
     )
 }
