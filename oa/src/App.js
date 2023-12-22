@@ -8,10 +8,10 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 function App() {
   return (
     <div className='App'>
-      <BrowserRouter>
+      <BrowserRouter basename='https://jjj-u-yeon.github.io/immigr8'>
         <Routes>
-          <Route path='/immigr8' element = {<Form/>}/>
-          <Route path='/immigr8/review' element = {<Review/>}/>
+          <Route path='/' element = {<Form/>}/>
+          <Route path='//review' element = {<Review/>}/>
         </Routes>
       </BrowserRouter>
     </div>
