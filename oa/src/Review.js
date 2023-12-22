@@ -1,36 +1,29 @@
 import React, { useState, useEffect, Link } from 'react'
-import { Paper,FormControl, FormControlLabel, FormLabel, Grid,RadioGroup,TextField, Radio, Select, Tooltip, IconButton } from '@mui/material';
-import {HelpOutline} from '@mui/icons-material';
+import { Paper, Tooltip, Select, FormControl, FormControlLabel, FormLabel, Grid,RadioGroup,TextField, Radio, Snackbar, IconButton } from '@mui/material';
 import { useForm } from './components/useForm';
 import {useNavigate, Router, Routes, BrowserRouter} from 'react-router-dom'
 import { Button } from './components/Button'
-import { setForm } from './services/formService'
+import { getForm, setForm } from './services/formService'
+import { CloseRounded, HelpOutline } from '@mui/icons-material';
 import states from './consts/states.json'
-import './App.css';
-import {DateField, DatePicker, LocalizationProvider, AdapterFormats, DateTimePicker} from '@mui/x-date-pickers'
 
 const initialValues = {
-    givenNameA: '',
+    givenNameA: getForm("givenNameA"),
     middleNameA: '',
-    familyNameA: '',
-    givenName: '',
-    middleName: '',
-    familyName: '',
+    familyNameA: getForm("familyNameA"),
+    givenNameC: '',
+    middleNameC: '',
+    familyNameC: '',
     email: '',
-    phone: '',
-    street: '',
+    mobile: '',
     city: '',
-    state: '',
+    gender: 'male',
     houseType: 'House',
-    unitNumber: '',
-    zipCode: '',
-    creditNum: '',
-    creditType: '',
     creditExpiry: new Date(),
-    authorizedAmount: '',
 }
 
-export default function Form() {
+export default function Review() {
+
     const validate = (fieldValues = values) => {
         let temp = {...errors}
         if ('givenNameA' in fieldValues)
@@ -39,11 +32,6 @@ export default function Form() {
             ...temp
         })
     }
-
-    useEffect(() => {
-        const data = localStorage.getItem("formData");
-        setValues({...values, data});
-      }, [])
 
     const{
         values,
@@ -55,19 +43,45 @@ export default function Form() {
 
     }=useForm(initialValues, true, validate);
 
-    const handleSubmit = e => {
+    const [open, setOpen] = React.useState(false);
+ 
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const handleSubmit = (e) => {
         e.preventDefault()
+        setOpen(true);
+        setForm(values)
+        //Send request to the backend here
+        resetForm()
+        navigate('/')
     }
 
     const navigate = useNavigate();
     const routeChange = () => {
-        let path = '/review';
+        let path = '/';
         navigate(path);
-        setForm(values);
     }
+    const action = (
+        <React.Fragment>
+          <Button color="secondary" size="small" onClick={handleClose}>
+            UNDO
+          </Button>
+          <IconButton
+            size="small"
+            aria-label="close"
+            color="inherit"
+            onClick={handleClose}
+          >
+            <CloseRounded fontSize="small" />
+          </IconButton>
+        </React.Fragment>
+      );
+ 
 
     return (
-        <Paper className='Paper' elevation={5}>
+        <><Paper className='Paper' elevation={5}>
         <form spacing={2} onSubmit={handleSubmit}>
             <Grid >
                 <h3>Applicant's/Petitioner's/Requester's Information</h3>
@@ -78,14 +92,14 @@ export default function Form() {
                     label='Given Name'
                     name='givenNameA'
                     value={values.givenNameA}
-                    onChange={handleInputChange}
+                    InputProps={{readOnly: true, disableUnderline: true}}
                     />
                     <TextField
                     variant='outlined'
                     label='Middle Name (if any)'
                     name='middleNameA'
                     value={values.middleNameA}
-                    onChange={handleInputChange}
+                    InputProps={{readOnly: true, disableUnderline: true}}
                     />
                     <TextField
                     required={true}
@@ -94,13 +108,10 @@ export default function Form() {
                     shrink={true}
                     name='familyNameA'
                     value={values.familyNameA}
-                    onChange={handleInputChange}
+                    InputProps={{readOnly: true, disableUnderline: true}}
                     />
                     </Grid>
                 <h3>Credit Card Billing Information</h3>
-                <Tooltip title="Credit Card Holder's Name as it appears on the card" placement='bottom'>
-                    <HelpOutline/>
-                </Tooltip>
                 <Grid item xs={12} className='input'>
                 <TextField
                     required={true}
@@ -108,14 +119,14 @@ export default function Form() {
                     label='Given Name'
                     name='givenName'
                     value={values.givenName}
-                    onChange={handleInputChange}
+                    InputProps={{readOnly: true, disableUnderline: true}}
                     />
                     <TextField
                     variant='outlined'
                     label='Middle Name (if any)'
                     name='middleName'
                     value={values.middleName}
-                    onChange={handleInputChange}
+                    InputProps={{readOnly: true, disableUnderline: true}}
                     />
                     <TextField
                     required={true}
@@ -124,7 +135,7 @@ export default function Form() {
                     shrink={true}
                     name='familyName'
                     value={values.familyName}
-                    onChange={handleInputChange}
+                    InputProps={{readOnly: true, disableUnderline: true}}
                     />
                 </Grid>
                 <Grid item xs={12} className='input'>
@@ -134,14 +145,14 @@ export default function Form() {
                     label='Street Number and Name'
                     name='street'
                     value={values.street}
-                    onChange={handleInputChange}
+                    InputProps={{readOnly: true, disableUnderline: true}}
                     />
                     <TextField
                     variant='outlined'
                     label='Unit Number (if applicable)'
                     name='unitNumber'
                     value={values.unitNumber}
-                    onChange={handleInputChange}
+                    InputProps={{readOnly: true, disableUnderline: true}}
                     />
                     <FormControl>
                         <FormLabel>Type of Housing</FormLabel>
@@ -149,7 +160,7 @@ export default function Form() {
                         row
                             name='houseType'
                             value={values.houseType}
-                            onChange={handleInputChange}>
+                            InputProps={{readOnly: true, disableUnderline: true}}>
                             <FormControlLabel value="Apartment" control={<Radio/>} label="Apartment"/>
                             <FormControlLabel value="Flat" control={<Radio/>} label="Flat"/>
                             <FormControlLabel value="House" control={<Radio/>} label="House"/>
@@ -163,9 +174,9 @@ export default function Form() {
                     label='City or Town'
                     name='city'
                     value={values.city}
-                    onChange={handleInputChange}
+                    InputProps={{readOnly: true, disableUnderline: true}}
                     />
-                    <Select onChange={handleInputChange} label="State" value={values.state} name="state" required={true}>
+                    <Select InputProps={{readOnly: true, disableUnderline: true}} label="State" value={values.state} name="state" required={true}>
                         {states.map(item => (
                             <option>
                                 {item.abbreviation}
@@ -179,7 +190,7 @@ export default function Form() {
                     shrink={true}
                     name='zipCode'
                     value={values.zipCode}
-                    onChange={handleInputChange}
+                    InputProps={{readOnly: true, disableUnderline: true}}
                     />
                 </Grid>
                 <Grid item xs={12} className='input'>
@@ -189,7 +200,7 @@ export default function Form() {
                     label='Daytime Telephone Number'
                     name='phone'
                     value={values.phone}
-                    onChange={handleInputChange}
+                    InputProps={{readOnly: true, disableUnderline: true}}
                     />
                     <TextField
                     required={true}
@@ -198,7 +209,7 @@ export default function Form() {
                     shrink={true}
                     name='email'
                     value={values.email}
-                    onChange={handleInputChange}
+                    InputProps={{readOnly: true, disableUnderline: true}}
                     />
                 </Grid>
             </Grid>
@@ -210,14 +221,14 @@ export default function Form() {
                     label='Credit Card Number'
                     name='creditNum'
                     value={values.creditNum}
-                    onChange={handleInputChange}
+                    InputProps={{readOnly: true, disableUnderline: true}}
                     />
                     <TextField
                     variant='outlined'
                     label='Middle Name (if any)'
                     name='middleName'
                     value={values.middleName}
-                    onChange={handleInputChange}
+                    InputProps={{readOnly: true, disableUnderline: true}}
                     />
                     <TextField
                     required={true}
@@ -226,20 +237,24 @@ export default function Form() {
                     shrink={true}
                     name='familyName'
                     value={values.familyName}
-                    onChange={handleInputChange}
+                    InputProps={{readOnly: true, disableUnderline: true}}
                     />
-                    {/* <DateTimePicker
-                    label="Dash separator"
-                    value={values.creditExpiry}
-                    onChange={handleInputChange}
-                    format="MM-DD-YYYY"
-                    /> */}
-
-                    
-
                 </Grid>
-            <Button onClick={routeChange} text='Next' className="input"/>
+                <Button onClick={routeChange} text='Edit'/>
+                <Button onClick={handleSubmit} type='submit' text='Submit'/>
         </form>
         </Paper>
+        <Snackbar
+                anchorOrigin={{
+                    horizontal: "left",
+                    vertical: "bottom",
+                }}
+                open={open}
+                autoHideDuration={50000}
+                message="The form was successfully submitted"
+                onClose={handleClose}
+                action={action}
+            />
+        </>
     )
-}
+    }

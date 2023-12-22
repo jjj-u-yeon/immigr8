@@ -1,5 +1,8 @@
 .App {
   text-align: center;
+  min-height: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .App-logo {
@@ -26,6 +29,18 @@
 
 .App-link {
   color: #61dafb;
+}
+
+.Paper {
+  max-height: 80%;
+  width: 65%;
+  vertical-align: middle;
+  padding: 2%;
+  margin: 5%;
+}
+
+.input * {
+  margin: 2%;
 }
 
 @keyframes App-logo-spin {
