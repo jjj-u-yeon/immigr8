@@ -1,10 +1,10 @@
 import React, { useState, useEffect, Link } from 'react'
-import { FormControl, FormControlLabel, FormLabel, Grid,RadioGroup,TextField, Radio } from '@mui/material';
+import { FormControl, FormControlLabel, FormLabel, Grid,RadioGroup,TextField, Radio, Snackbar, IconButton } from '@mui/material';
 import { useForm } from './components/useForm';
 import {useNavigate, Router, Routes, BrowserRouter} from 'react-router-dom'
 import { Button } from './components/Button'
 import { getForm, setForm } from './services/formService'
-
+import { CloseRounded } from '@mui/icons-material';
 const initialValues = {
     givenNameA: getForm("givenNameA"),
     middleNameA: '',
@@ -41,11 +41,18 @@ export default function Review() {
 
     }=useForm(initialValues, true, validate);
 
+    const [open, setOpen] = React.useState(false);
+ 
+    const handleClose = () => {
+        setOpen(false);
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault()
-        alert("u good to submit?")
+        setOpen(true);
         setForm(values)
         resetForm()
+        navigate('/')
     }
 
     const navigate = useNavigate();
@@ -53,6 +60,22 @@ export default function Review() {
         let path = '/';
         navigate(path);
     }
+    const action = (
+        <React.Fragment>
+          <Button color="secondary" size="small" onClick={handleClose}>
+            UNDO
+          </Button>
+          <IconButton
+            size="small"
+            aria-label="close"
+            color="inherit"
+            onClick={handleClose}
+          >
+            <CloseRounded fontSize="small" />
+          </IconButton>
+        </React.Fragment>
+      );
+ 
 
     return (
         <>
@@ -60,6 +83,17 @@ export default function Review() {
             <Button onClick={handleSubmit} type='submit' text='Submit'/>
         <div>
         </div>
+        <Snackbar
+                anchorOrigin={{
+                    horizontal: "left",
+                    vertical: "bottom",
+                }}
+                open={open}
+                autoHideDuration={50000}
+                message="The form was successfully submitted"
+                onClose={handleClose}
+                action={action}
+            />
         </>
     )
     }
