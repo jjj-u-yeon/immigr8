@@ -8,7 +8,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 function App() {
   return (
     <div className='App'>
-      <BrowserRouter basename='https://jjj-u-yeon.github.io/immigr8'>
+      <BrowserRouter basename={process.env.PUBLIC_URL}>
         <Routes>
           <Route path='/' element = {<Form/>}/>
           <Route path='//review' element = {<Review/>}/>
