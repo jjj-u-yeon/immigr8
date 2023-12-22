@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Link } from 'react'
-import { Paper,FormControl, FormControlLabel, FormLabel, Grid,RadioGroup,TextField, Radio, Select, Tooltip, IconButton } from '@mui/material';
+import { Paper,FormControl, FormControlLabel, FormLabel, Grid,RadioGroup,TextField, Radio, Select, Tooltip, IconButton, MenuItem } from '@mui/material';
 import {HelpOutline} from '@mui/icons-material';
 import { useForm } from './components/useForm';
 import {useNavigate, Router, Routes, BrowserRouter} from 'react-router-dom'
@@ -20,7 +20,7 @@ const initialValues = {
     phone: '',
     street: '',
     city: '',
-    state: '',
+    stateUS: '',
     houseType: 'House',
     unitNumber: '',
     zipCode: '',
@@ -38,6 +38,8 @@ export default function Form() {
         setErrors({
             ...temp
         })
+        if (fieldValues == values)
+            return Object.values(temp).every(x => x == "")
     }
 
     useEffect(() => {
@@ -63,6 +65,7 @@ export default function Form() {
     const routeChange = () => {
         let path = '/review';
         navigate(path);
+        validate();
         setForm(values);
     }
 
@@ -78,6 +81,7 @@ export default function Form() {
                     label='Given Name'
                     name='givenNameA'
                     value={values.givenNameA}
+                    error={errors.givenNameA}
                     onChange={handleInputChange}
                     />
                     <TextField
@@ -97,10 +101,9 @@ export default function Form() {
                     onChange={handleInputChange}
                     />
                     </Grid>
-                <h3>Credit Card Billing Information</h3>
-                <Tooltip title="Credit Card Holder's Name as it appears on the card" placement='bottom'>
+                <h3>Credit Card Billing Information <Tooltip title="Credit Card Holder's Information" placement='bottom'>
                     <HelpOutline/>
-                </Tooltip>
+                </Tooltip></h3>
                 <Grid item xs={12} className='input'>
                 <TextField
                     required={true}
@@ -146,8 +149,8 @@ export default function Form() {
                     <FormControl>
                         <FormLabel>Type of Housing</FormLabel>
                         <RadioGroup
-                        row
                             name='houseType'
+                            label='Housing type'
                             value={values.houseType}
                             onChange={handleInputChange}>
                             <FormControlLabel value="Apartment" control={<Radio/>} label="Apartment"/>
@@ -165,13 +168,15 @@ export default function Form() {
                     value={values.city}
                     onChange={handleInputChange}
                     />
-                    <Select onChange={handleInputChange} label="State" value={values.state} name="state" required={true}>
+                    <FormControl>
+                    <Select onChange={handleInputChange} label="State" value={values.stateUS} name="stateUS" required={true}>
                         {states.map(item => (
-                            <option>
+                            <MenuItem>
                                 {item.abbreviation}
-                            </option>
+                            </MenuItem>
                         ))}
                     </Select>
+                    </FormControl>
                     <TextField
                     required={true}
                     variant='outlined'
@@ -222,10 +227,10 @@ export default function Form() {
                     <TextField
                     required={true}
                     variant='outlined'
-                    label='Family Name'
+                    label='Authorized Payment Amount'
                     shrink={true}
-                    name='familyName'
-                    value={values.familyName}
+                    name='authorizedAmount'
+                    value={values.authorizedAmount}
                     onChange={handleInputChange}
                     />
                     {/* <DateTimePicker
